@@ -115,8 +115,10 @@ do
 		echo "${_uncompress_tokens} ${_dependency_target_path_token}${_compress_ext} \\"
 		echo "|| { echo '[ee] unable to uncompress dependency file \`'${_dependency_target_path_token}'${_compress_ext}\`; aborting!' >&2 ; exit 1 ; }"
 	fi
-	echo "test \"\` md5sum -b <${_dependency_target_path_token} \`\" == '${_dependency_md5sum} *-' \\"
+	echo "_md5sum=\"\$( md5sum -b <${_dependency_target_path_token} )\""
+	echo "test \"\${_md5sum}\" = '${_dependency_md5sum} *-' -o \"\${_md5sum}\" = '${_dependency_md5sum}  -' \\"
 	echo "|| { echo '[ee] wrong md5sum for dependency file \`'${_dependency_target_path_token}'\`; aborting!' >&2 ; exit 1 ; }"
+	echo "unset _md5sum"
 	if test -x "${_dependency_source_path}"
 	then
 		echo "chmod +x ${_dependency_target_path_token} \\"
@@ -127,13 +129,28 @@ done
 echo "cd ${_expand_target_path_token} \\"
 echo "|| { echo '[ee] unable to chdir folder \`'${_expand_target_path_token}'\`; aborting!' >&2 ; exit 1 ; }"
 
+for _signal in HUP INT QUIT TERM CONT STOP
+do
+	if test "${_signal}" == INT
+	then
+		_trap_signal="${_signal}"
+		_send_signal=TERM
+	else
+		_trap_signal="${_signal}"
+		_send_signal="${_signal}"
+	fi
+	echo "trap '{ echo \"[ii] killing the child process \\\`\${!}\\\` with signal \\\`${_send_signal}\\\`... \" >&2 ; kill -s '${_send_signal}' \"\${!}\" || true ; }' ${_trap_signal} || true"
+done
+
 echo "outcome=0"
 echo "test \"\${#}\" -ne 0 \\"
-echo "|| './'${_main_name_token} \\"
-echo "|| { outcome=\"${?}\" ; echo '[ee] failed to execute main file \`./'${_main_name_token}'\`; aborting!' >&2 ; }"
+echo "|| { './'${_main_name_token} & } \\"
+echo "|| { outcome=\"\${?}\" ; echo '[ee] failed to execute main file \`./'${_main_name_token}'\`; aborting!' >&2 ; }"
 echo "test \"\${#}\" -eq 0 \\"
-echo "|| './'${_main_name_token} \"\${@}\" \\"
-echo "|| { outcome=\"${?}\" ; echo '[ee] failed to execute main file \`./'${_main_name_token}'\`; aborting!' >&2 ; }"
+echo "|| { './'${_main_name_token} \"\${@}\" & } \\"
+echo "|| { outcome=\"\${?}\" ; echo '[ee] failed to execute main file \`./'${_main_name_token}'\`; aborting!' >&2 ; }"
+
+echo "test \"\${outcome}\" -ne 0 || while test -e \"/proc/\${!}\" ; do wait \"\${!}\" ; done || outcome=\"\${?}\""
 
 echo "rm -rf ${_expand_target_path_token} \\"
 echo "|| { echo '[ee] unable to remove bundle folder \`'${_expand_target_path_token}'\`; aborting!' >&2 ; exit 1 ; }"

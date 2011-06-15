@@ -51,8 +51,8 @@ ___harness_before_exit_script_1='{
 	{
 		if test "${_harness_pid}" == "${BASHPID}" ; then
 			exec </dev/null >/dev/null 2>/dev/null || true
-			test -z "${_harness_stdin:-}" || { exec {_harness_stdin}<&- || true ; _harness_stdin='' ; } || true
-			test -z "${_harness_stdout:-}" || { exec {_harness_stdout}>&- || true ; _harness_stdout='' ; } || true
+			test -z "${_harness_stdin:-}" || { exec <&"${_harness_stdin}" || true ; exec {_harness_stdin}<&- || true ; _harness_stdin='' ; } || true
+			test -z "${_harness_stdout:-}" || { exec >&"${_harness_stdout}" || true ; exec {_harness_stdout}>&- || true ; _harness_stdout='' ; } || true
 			test -z "${_harness_stderr:-}" || { exec 2>&"${_harness_stderr}" || true ; exec {_harness_stderr}>&- || true ; _harness_stderr='' ; } || true
 			test -z "${___harness_stderr_coproc_pipe:-}" || { exec {___harness_stderr_coproc_pipe}>&- || true ; ___harness_stderr_coproc_pipe='' ; } || true
 			test -z "${___harness_stdout_coproc_pipe:-}" || { exec {___harness_stdout_coproc_pipe}>&- || true ; ___harness_stdout_coproc_pipe='' ; } || true
@@ -213,7 +213,6 @@ ___harness_configuration () {
 	local ___local_core_dirname=''
 	local ___local_core_basename=''
 	local ___local_core_prefix=''
-	local ___local_core_suffix=''
 	local ___local_main_path=''
 	local ___local_library_path=''
 	local ___local_tmp_prefix=''
@@ -236,18 +235,15 @@ ___harness_configuration () {
 		test -f "./${___local_core_basename}"
 		
 		case "${___local_core_basename}" in
-			( *'.bash' )
-				___local_core_prefix="${___local_core_basename%%.bash}"
-				___local_core_suffix='.bash'
+			( *'.harness.bash' )
+				___local_core_prefix="${___local_core_basename%%.harness.bash}"
 			;;
-			( *'.sh' )
-				___local_core_prefix="${___local_core_basename%%.sh}"
-				___local_core_suffix='.sh'
+			( *'.harness.sh' )
+				___local_core_prefix="${___local_core_basename%%.harness.sh}"
 			;;
 			( * )
 				_trace debug harness "core script has an unknown name pattern: \`${___local_core_path}\`; ignoring!"
 				___local_core_prefix="${___local_core_basename}"
-				___local_core_suffix=''
 			;;
 		esac
 		
@@ -293,6 +289,9 @@ ___harness_configuration () {
 	fi
 	
 	___harness_tmp_queue="${___harness_tmp_path}/${___harness_tmp_prefix}.tmp_queue_${_harness_pid}_${RANDOM}${RANDOM}"
+	
+	_self_path="${___harness_core_script_path}"
+	_self_name="$( basename -- "${_self_path}" )"
 	
 	_unset_failure_message
 	return 0
@@ -409,7 +408,7 @@ ___harness_main () {
 	fi
 	
 	_trace debug harness "sourcing main script: \`${___harness_main_script_path}\`..."
-	_source "${___harness_main_script_path}" "${@}"
+	_source "${___harness_main_script_path}" "${@:-}"
 	
 	_abort harness "main script should not return; aborting!"
 	exit 1
@@ -500,6 +499,11 @@ _source () {
 _run_sync () {
 	test "${#}" -ge 1
 	_set_failure_message "failed running synchronous command \`${*}\`"
+	local ___local_executable="$( type -P -- "${1}" || true )"
+	if test -z "${___local_executable}" ; then
+		_trace error harness "command executable was not resolved: \`${1}\`"
+		return 1
+	fi
 	_trace debug harness "running synchronous command: \`${*}\`..."
 	if ( eval "${___harness_run_before_hook_script}" && exec "${@}" || exit 1 ; ) ; then
 		_unset_failure_message
@@ -516,6 +520,11 @@ _run_sync_io () {
 	local ___local_stdout="${2}"
 	shift 2
 	_set_failure_message "failed running synchronous command \`${*}\`"
+	local ___local_executable="$( type -P -- "${1}" || true )"
+	if test -z "${___local_executable}" ; then
+		_trace error harness "command executable was not resolved: \`${1}\`"
+		return 1
+	fi
 	_trace debug harness "running synchronous command: \`${*}\`..."
 	if ( eval "${___harness_run_before_hook_script}" && exec "${@}" <"${___local_stdin}" >|"${___local_stdout}" || exit 1 ; ) ; then
 		_unset_failure_message
@@ -529,6 +538,11 @@ _run_sync_io () {
 _run_async () {
 	test "${#}" -ge 1
 	_set_failure_message "failed running asynchronous command \`${*}\`"
+	local ___local_executable="$( type -P -- "${1}" || true )"
+	if test -z "${___local_executable}" ; then
+		_trace error harness "command executable was not resolved: \`${1}\`"
+		return 1
+	fi
 	_trace debug harness "running asynchronous command: \`${*}\`..."
 	if ( eval "${___harness_run_before_hook_script}" && exec "${@}" || exit 1 ; ) & then
 		_unset_failure_message
@@ -542,12 +556,50 @@ _run_async () {
 _run_fg () {
 	test "${#}" -ge 1
 	_set_failure_message "failed running foreground command \`${*}\`"
+	local ___local_executable="$( type -P -- "${1}" || true )"
+	if test -z "${___local_executable}" ; then
+		_trace error harness "command executable was not resolved: \`${1}\`"
+		return 1
+	fi
 	_trace debug harness "running foreground command: \`${*}\`..."
 	if ( eval "${___harness_run_fg_before_hook_script}" && exec "${@}" || exit 1 ; ) ; then
 		_unset_failure_message
 		return 0
 	else
 		return "${?}"
+	fi
+}
+
+
+_run_exec () {
+	test "${#}" -ge 1
+	_set_failure_message "failed running self replacement command \`${*}\`"
+	local ___local_executable="$( type -P -- "${1}" || true )"
+	if test -z "${___local_executable}" ; then
+		_trace error harness "command executable was not resolved: \`${1}\`"
+		return 1
+	fi
+	_trace debug harness "running self replacement command: \`${*}\`..."
+	eval "${___harness_before_exit_script_1}"
+	eval "${___harness_before_exit_script_2}"
+	exec "${@}"
+	exit 1
+}
+
+
+_resolve_executable () {
+	test "${#}" -eq 2
+	_set_failure_message "failed resolving executable: \`${2}\`"
+	[[ "${1}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]
+	_trace debug harness "resolving executable: \`${2}\`..."
+	local ___local_path="$( type -P -- "${2}" || true )"
+	if test -n "${___local_path}" ; then
+		eval "${1}='${___local_path//\'/'${___escaped_quote_tokens}'}'"
+		_unset_failure_message
+		return 0
+	else
+		_trace warn harness "failed resolving executable: \`${2}\`"
+		return 1
 	fi
 }
 
@@ -598,5 +650,5 @@ _tmp_enqueue () {
 
 ___harness_configuration
 ___harness_coprocs
-___harness_main "${@}"
+___harness_main "${@:-}"
 exit 1

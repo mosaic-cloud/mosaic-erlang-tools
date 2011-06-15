@@ -46,7 +46,7 @@ __deploy_erlang_applications () {
 	test "${#}" -eq 0
 	if test -e "${_deployment_erlang_path}/lib" ; then
 		_trace warn main "erlang applications already deployed; re-deploying!"
-		rm -Rf -- "${_deployment_erlang_path}/lib"
+		_run_sync rm -Rf -- "${_deployment_erlang_path}/lib"
 	fi
 	_create_folder "${_deployment_erlang_path}/lib"
 	local __bundle_name='' __bundle_path=''
