@@ -15,13 +15,19 @@ _action="${1}"
 _deployment_path="${2}"
 shift 2
 
+if test "${_deployment_path:0:1}" != "/" ; then
+	_abort main "usage: <deployment-path> must be an absolute path"
+fi
 
-_deployment_bundles_path="${_deployment_path}/bundles"
-_deployment_erlang_path="${_deployment_path}/erlang"
-_deployment_data_path="${_deployment_path}/data"
 
-
-_source ./control.env.bash
+__configure () {
+	test "${#}" -eq 0
+	_deployment_bundles_path="${_deployment_path}/bundles"
+	_deployment_erlang_path="${_deployment_path}/erlang"
+	_deployment_data_path="${_deployment_path}/data"
+	_source ./control.env.bash
+	return 0
+}
 
 
 __fetch_bundles () {
@@ -62,6 +68,7 @@ __deploy_erlang_applications () {
 _deploy () {
 	_set_failure_message 'failed deploying'
 	test "${#}" -eq 0
+	__configure
 	_create_folder "${_deployment_path}"
 	_create_folder "${_deployment_bundles_path}"
 	_create_folder "${_deployment_erlang_path}"
@@ -75,6 +82,7 @@ _deploy () {
 
 _run () {
 	_set_failure_message 'failed running'
+	__configure
 	if ! test -e "${_deployment_path}" -a -e "${_deployment_erlang_path}" -a -e "${_deployment_data_path}" ; then
 		_abort main "nothing deployed at the specified path: \`${_deployment_path}\`"
 	fi
