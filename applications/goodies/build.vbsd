@@ -1,0 +1,6 @@
+
+(vbs:require-erlang)
+
+(vbs:define-erlang-application 'goodies
+	erl: "\\./sources/.*\\.erl"
+	hrl: "\\./sources/.*\\.hrl")

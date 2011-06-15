@@ -1,0 +1,8 @@
+
+(vbs:require-erlang)
+
+(vbs:define-erlang-application 'riak_core
+	dependencies: '(webmachine mochiweb)
+	erl: "(\\./repositories/riak-core/src|\\./generated)/.*\\.erl"
+	hrl: "(\\./repositories/riak-core/include|\\./generated)/.*\\.hrl"
+	additional-ebin: "\\./\\.generated/riak_core\\.app|\\./generated/.*\\.beam")
