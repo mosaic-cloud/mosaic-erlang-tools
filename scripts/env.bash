@@ -39,6 +39,7 @@ _erl_args=(
 	+Bd +Ww
 	+K true
 	+A 64
+	+hmbs 536870912
 	-env ERL_CRASH_DUMP /dev/null
 	-env ERL_LIBS "${_erl_libs}"
 	-env ERL_EPMD_PORT "${_erl_epmd_port}"

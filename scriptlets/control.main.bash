@@ -30,6 +30,7 @@ __configure () {
 			+Bd +Ww
 			+K true
 			+A 64
+			+hmbs 536870912
 			-env ERL_CRASH_DUMP /dev/null
 			-env ERL_LIBS "${_deployment_erlang_path}/lib"
 			-env ERL_MAX_PORTS 4096
