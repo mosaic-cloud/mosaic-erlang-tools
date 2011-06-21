@@ -2,12 +2,13 @@
 
 _erl_args+=(
 	-noshell -noinput
+	-sname "{...}"
 	-config "${_deployment_erlang_path}/lib/{...}/priv/{...}.config"
-	-run {...} {...}
+	-run "{...}" "{...}"
 )
 
 _ez_bundle_names=(
-	{...}
+	"{...}"
 )
 
 _bundles_base_url="{...}"
