@@ -5,9 +5,4 @@ if ! test "${#}" -eq 0 ; then
 	exit 1
 fi
 
-_epmd_argv=(
-	"${_epmd}"
-		"${_epmd_args[@]}"
-)
-
-exec "${_epmd_argv[@]}"
+exec "${_epmd}" "${_epmd_args[@]}"

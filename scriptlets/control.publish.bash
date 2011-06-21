@@ -3,6 +3,11 @@
 set -e -u -o pipefail || exit 1
 test "${#}" -eq 0
 
+_deployment_path="/tmp/mosaic-temporary"
+_deployment_bundles_path="${_deployment_path}/bundles"
+_deployment_erlang_path="${_deployment_path}/erlang"
+_deployment_data_path="${_deployment_path}/data"
+
 source ./scripts/control.env.bash
 
 _files=(

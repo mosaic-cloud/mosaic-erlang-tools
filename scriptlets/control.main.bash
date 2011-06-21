@@ -25,6 +25,17 @@ __configure () {
 	_deployment_bundles_path="${_deployment_path}/bundles"
 	_deployment_erlang_path="${_deployment_path}/erlang"
 	_deployment_data_path="${_deployment_path}/data"
+	_erl_path=''
+	_erl_args=(
+			+Bd +Ww
+			+K true
+			+A 64
+			-env ERL_CRASH_DUMP /dev/null
+			-env ERL_LIBS "${_deployment_erlang_path}/lib"
+			-env ERL_MAX_PORTS 4096
+			-env ERL_FULLSWEEP_AFTER 0
+			-env LANG C
+	)
 	_source ./control.env.bash
 	return 0
 }
@@ -90,7 +101,7 @@ _run () {
 		_resolve_executable _erl_path erl
 	fi
 	cd -- "${_deployment_path}"
-	_run_exec "${_erl_path}" "${_erl_run_argv[@]}"
+	_run_exec "${_erl_path}" "${_erl_args[@]}"
 	_abort main "fallen through..."
 	_unset_failure_message
 }

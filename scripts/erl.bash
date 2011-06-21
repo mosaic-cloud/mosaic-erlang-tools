@@ -1,7 +1,11 @@
 #!/dev/null
 
-if test "${#}" -eq 0 ; then
-	exec "${_erl}" "${_erl_args[@]}"
+if test "${#}" -ge 1 ; then
+	_erl_args+=( "${@}" )
+fi
+
+if test "${#_erl_args[@]}" -eq 0 ; then
+	exec env "${_erl_env[@]}" "${_erl}"
 else
-	exec "${_erl}" "${_erl_args[@]}" "${@}"
+	exec env "${_erl_env[@]}" "${_erl}" "${_erl_args[@]}"
 fi

@@ -37,10 +37,17 @@ _erl_epmd_port=31807
 _erl_host="localhost"
 _erl_args=(
 	+Bd +Ww
+	+K true
+	+A 64
 	-env ERL_CRASH_DUMP /dev/null
 	-env ERL_LIBS "${_erl_libs}"
 	-env ERL_EPMD_PORT "${_erl_epmd_port}"
+	-env ERL_MAX_PORTS 4096
+	-env ERL_FULLSWEEP_AFTER 0
 	-env LANG C
+)
+_erl_env=(
+		ERL_EPMD_PORT="${_erl_epmd_port}"
 )
 
 _epmd_port="${_erl_epmd_port}"

@@ -17,6 +17,7 @@ then
 	mkdir -p -- "${_outputs}"
 	"${_vbs}" -- generate-ninja-script . "$( basename -- "${_outputs}" )" "${_ninja_file}"
 fi
+
 echo "[ii] executing build script..." >&2
 if test "${#}" -eq 0 ; then
 	exec "${_ninja}" "${_ninja_args[@]}" __build__

@@ -1,11 +1,6 @@
 #!/dev/null
 
-_erl_path=''
-
-_erl_run_argv=(
-	+Bd +Ww
-	-env ERL_CRASH_DUMP /dev/null
-	-env ERL_LIBS "${_deployment_erlang_path}/lib"
+_erl_args+=(
 	-noshell -noinput
 	-config "${_deployment_erlang_path}/lib/{...}/priv/{...}.config"
 	-run {...} {...}
