@@ -1,8 +1,9 @@
 #!/dev/null
 
-_scripts="$( readlink -e -- ./scripts || true )"
-_tools="$( readlink -f -- ./.tools || true )"
-_outputs="$( readlink -f -- ./.outputs || true )"
+_workbench="$( readlink -e -- . )"
+_scripts="${_workbench}/scripts"
+_tools="${_workbench}/.tools"
+_outputs="${_workbench}/.outputs"
 _make=ninja
 
 _PATH="${_tools}/bin:${PATH}"
@@ -34,7 +35,6 @@ fi
 _erl_libs="${_outputs}/erlang/applications"
 _erl_cookie="1a839e3e140053d06ad0bc773b2d5771"
 _erl_epmd_port=31807
-_erl_host="localhost"
 _erl_args=(
 	+Bd +Ww
 	+K true
@@ -48,6 +48,7 @@ _erl_args=(
 	-env LANG C
 )
 _erl_env=(
+		PATH="${_outputs}/gcc/applications-elf:${_PATH}"
 		ERL_EPMD_PORT="${_erl_epmd_port}"
 )
 
