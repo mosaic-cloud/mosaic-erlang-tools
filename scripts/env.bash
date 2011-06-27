@@ -62,3 +62,7 @@ _ninja_file="${_outputs}/.make.ninja"
 _ninja_args=(
 	-f "${_ninja_file}"
 )
+
+_package_name="$( basename -- "$( readlink -e -- . )" )"
+_package_version=0.1.alpha
+_package_afs=/afs/olympus.volution.ro/people/ciprian/web/data/5e069b1ba84ae3ab9c0eb0d8cbcb0a57
