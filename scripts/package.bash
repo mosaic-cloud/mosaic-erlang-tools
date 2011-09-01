@@ -101,7 +101,8 @@ EOS
 
 chmod +x -- "${_outputs}/package/lib/scripts/do.sh"
 
-for _script_name in run-node ; do
+for _script_name in run-component run-node ; do
+	test -e "${_scripts}/${_script_name}.bash" || continue
 	cp -T "${_scripts}/${_script_name}.bash" "${_outputs}/package/lib/scripts/${_script_name}.bash"
 	ln -s -T ./do.sh "${_outputs}/package/lib/scripts/${_script_name}"
 	cat >"${_outputs}/package/bin/${_package_name}--${_script_name}" <<EOS
