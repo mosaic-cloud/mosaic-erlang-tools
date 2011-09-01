@@ -1,6 +1,6 @@
 #!/dev/null
 
-find . -mindepth 1 \( -name '.*' -prune \) -o \( -name 'generate.bash' -print \) \
+find -L . -mindepth 1 \( -name '.*' -prune \) -o \( -name 'generate.bash' -print \) \
 | while read _generate ; do
 	_generated="$( dirname -- "${_generate}" )/.generated"
 	if test ! -e "${_generated}" || test "${_generate}" -nt "${_generated}" ; then
