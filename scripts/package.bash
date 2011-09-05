@@ -64,7 +64,7 @@ fi
 
 _erl_libs="${_package}/lib/applications-erl"
 _erl_cookie="1a839e3e140053d06ad0bc773b2d5771"
-_erl_epmd_port=31807
+_erl_epmd_port="${erlang_epmd_port:-31807}"
 _erl_host="localhost"
 _erl_args=(
 	+Bd +Ww
