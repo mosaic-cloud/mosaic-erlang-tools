@@ -48,7 +48,7 @@ _erl_args=(
 	-env LANG C
 )
 _erl_env=(
-		PATH="${_outputs}/gcc/applications-elf:${_PATH}"
+		PATH="${_outputs}/gcc/applications-elf:$( echo "$( readlink -e .. )"/mosaic-{node,node-wui,components-{rabbitmq,riak-kv,httpg},java-platform/{cloudlets,drivers,infrastructure/components-container},examples-realtime-feeds{,-java}}/.outputs/package/bin | tr ' ' ':' ):${_PATH}"
 		ERL_EPMD_PORT="${_erl_epmd_port}"
 )
 
