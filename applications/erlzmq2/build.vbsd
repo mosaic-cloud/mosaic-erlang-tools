@@ -1,0 +1,8 @@
+
+(vbs:require-erlang)
+
+(vbs:define-erlang-application 'erlzmq
+	erl: "\\./repositories/erlzmq2/src/.*\\.erl"
+	hrl: "\\./repositories/erlzmq2/(include|src)/.*\\.hrl"
+	additional-ebin: "\\./\\.generated/erlzmq\\.app"
+	additional-priv: "\\./\\.generated/erlzmq_drv\\.so")
