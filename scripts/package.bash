@@ -5,8 +5,6 @@ if ! test "${#}" -eq 0 ; then
 	exit 1
 fi
 
-echo "[ii] packaging ${_package_name}..." >&2
-
 if test -e "${_outputs}/package" ; then
 	rm -R "${_outputs}/package"
 fi
@@ -101,7 +99,7 @@ EOS
 
 chmod +x -- "${_outputs}/package/lib/scripts/do.sh"
 
-for _script_name in run-component run-node ; do
+for _script_name in run-component run-node erl ; do
 	test -e "${_scripts}/${_script_name}.bash" || continue
 	cp -T "${_scripts}/${_script_name}.bash" "${_outputs}/package/lib/scripts/${_script_name}.bash"
 	ln -s -T ./do.sh "${_outputs}/package/lib/scripts/${_script_name}"
@@ -119,7 +117,7 @@ done
 cat >"${_outputs}/package/pkg.json" <<EOS
 {
 	"package" : "${_package_name}",
-	"version" : "${_package_version}.$( date '+%Y%m%d.%H%M%S' )",
+	"version" : "${_package_version}",
 	"maintainer" : "mosaic-developers@lists.info.uvt.ro",
 	"description" : "mOSAIC Component: ${_package_name}",
 	"directories" : [ "bin", "lib" ],
