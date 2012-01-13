@@ -136,7 +136,7 @@ cat >"${_outputs}/package/pkg.json" <<EOS
 	"description" : "mOSAIC Component: ${_package_name}",
 	"directories" : [ "bin", "lib" ],
 	"depends" : [
-		"mosaic-erlang-${_package_version}"
+		"mosaic-erlang"
 	]
 }
 EOS

@@ -54,7 +54,7 @@ _erl_args=(
 		-env LANG C
 )
 _erl_env=(
-		PATH="${_outputs}/applications-elf:${_PATH}"
+		PATH="${_outputs}/gcc/applications-elf:${_PATH}"
 		ERL_EPMD_PORT="${_erl_epmd_port}"
 )
 
