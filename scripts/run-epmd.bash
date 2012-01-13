@@ -5,4 +5,5 @@ if ! test "${#}" -eq 0 ; then
 	exit 1
 fi
 
-exec "${_epmd}" "${_epmd_args[@]}"
+exec env "${_epmd_env[@]}" "${_epmd_bin}" "${_epmd_args[@]}"
+exit 1
