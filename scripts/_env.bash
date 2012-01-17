@@ -82,7 +82,7 @@ _ninja_env=(
 
 _mvn_pkg_pom="${_outputs}/package.mvn/pom.xml"
 _mvn_args=(
-		-q
+		--errors --quiet
 )
 _mvn_env=(
 		PATH="${_PATH}"
