@@ -89,6 +89,6 @@ _mvn_env=(
 )
 
 _package_name="$( basename -- "$( readlink -e -- . )" )"
-_package_version=0.2.0_mosaic_dev
 _package_scripts=( run-node run-component run-epmd erl )
-_package_cook=cook@agent1.builder.mosaic.ieat.ro.
+_package_version="${mosaic_distribution_version:-0.2.0_mosaic_dev}"
+_package_cook="${mosaic_distribution_cook:-cook@agent1.builder.mosaic.ieat.ro}"
