@@ -32,12 +32,6 @@ if test -z "${_ninja_bin}" ; then
 	exit 1
 fi
 
-_mvn_bin="$( PATH="${_PATH}" type -P -- mvn || true )"
-if test -z "${_mvn_bin}" ; then
-	echo "[ee] missing \`mvn\` (Java Maven tool) executable in path: \`${_PATH}\`; ignoring!" >&2
-	exit 1
-fi
-
 _erl_libs="${_outputs}/erlang/applications"
 _erl_cookie="1a839e3e140053d06ad0bc773b2d5771"
 _erl_epmd_port="${erlang_epmd_port:-31807}"
@@ -77,14 +71,6 @@ _ninja_args=(
 		-f "${_ninja_file}"
 )
 _ninja_env=(
-		PATH="${_PATH}"
-)
-
-_mvn_pkg_pom="${_outputs}/package.mvn/pom.xml"
-_mvn_args=(
-		--errors --quiet
-)
-_mvn_env=(
 		PATH="${_PATH}"
 )
 
