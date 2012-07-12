@@ -5,13 +5,18 @@ if ! test "${#}" -eq 0 ; then
 	exit 1
 fi
 
-find -L . -mindepth 1 \( -name '.*' -prune \) -o \( -name 'generate.bash' -print \) \
+find -L . -mindepth 1 \( -name '.*' -prune \) -o \( \( -name 'generate.bash' -o -name 'generate-*.bash' \) -printf '%f\t%p\n' \) \
+| sort -t '	' -k 1,1 \
+| cut -d '	' -f 2 \
 | while read _generate ; do
 	_generated="$( dirname -- "${_generate}" )/.generated"
 	if test ! -e "${_generated}" || test "${_generate}" -nt "${_generated}" ; then
 		echo "[ii] generating \`${_generated}\`..." >&2
-		env PATH="${_PATH}" "${_generate}" 2>&1 \
-		| sed -u -r -e 's!^.*$![  ] &!g' >&2
+		if ! env PATH="${_PATH}" "${_generate}" 2>&1 | sed -u -r -e 's!^.*$![  ] &!g' >&2 ; then
+			echo "[ii] failed generating \`${_generated}\`; aborting!" >&2
+			rm -Rf -- "$( dirname -- "${_generate}" )/.generated"
+			exit 1
+		fi
 	fi
 done
 
