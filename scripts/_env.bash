@@ -20,6 +20,12 @@ if test -z "${_epmd_bin}" ; then
 	exit 1
 fi
 
+_dialyzer_bin="$( PATH="${_PATH}" type -P -- dialyzer || true )"
+if test -z "${_dialyzer_bin}" ; then
+	echo "[ee] missing \`dialyzer\` (Erlang Discrepancy Analyzer) executable in path: \`${_PATH}\`; ignoring!" >&2
+	exit 1
+fi
+
 _vbs_bin="$( PATH="${_PATH}" type -P -- vbs || true )"
 if test -z "${_vbs_bin}" ; then
 	echo "[ee] missing \`vbs\` (Volution Build System tool) executable in path: \`${_PATH}\`; ignoring!" >&2
@@ -59,6 +65,22 @@ _epmd_args=(
 )
 _epmd_env=(
 		PATH="${_PATH}"
+)
+
+_dialyzer_plt="${_outputs}/erlang/applications.plt"
+_dialyzer_args=(
+		--plt "${_dialyzer_plt}"
+		-Wunmatched_returns
+		-Werror_handling
+		-Wrace_conditions
+		# -Wbehaviours
+		-Wunderspecs
+		-Woverspecs
+		-Wspecdiffs
+)
+_dialyzer_env=(
+		PATH="${_PATH}"
+		ERL_LIBS="${_erl_libs}"
 )
 
 _vbs_args=()
