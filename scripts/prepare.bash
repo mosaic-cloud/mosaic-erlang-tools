@@ -5,6 +5,17 @@ if ! test "${#}" -eq 0 ; then
 	exit 1
 fi
 
+if test ! -e "${_outputs}" ; then
+	if test -L "${_outputs}" ; then
+		_outputs_store="$( readlink -- "${_outputs}" )"
+		mkdir -- "${_outputs_store}"
+	else
+		_outputs_store="${_temporary}/$( basename -- "${_workbench}" )--$( readlink -m -- "${_outputs}" | tr -d '\n' | md5sum -t | tr -d ' \n-' )"
+		mkdir -- "${_outputs_store}"
+		ln -s -T -- "${_outputs_store}" "${_outputs}"
+	fi
+fi
+
 find -L . -mindepth 1 \( -name '.*' -prune \) -o \( \( -name 'generate.bash' -o -name 'generate-*.bash' \) -printf '%f\t%p\n' \) \
 | sort -t '	' -k 1,1 \
 | cut -d '	' -f 2 \
@@ -24,7 +35,6 @@ if \
 		test ! -e "${_ninja_file}" -o "${_ninja_file}" -ot "${_vbs_bin}" \
 		|| test -n "$( find -L . -mindepth 1 \( -name '.*' -prune \) -o \( -name '*.vbsd' -cnewer "${_ninja_file}" -printf . \) )"
 then
-	mkdir -p -- "${_outputs}"
 	_vbs_args+=(
 			--
 			generate-ninja-script
