@@ -128,8 +128,8 @@ cat >"${_outputs}/package/pkg.json" <<EOS
 {
 	"package" : "${_package_name}",
 	"version" : "${_package_version}",
-	"maintainer" : "mosaic-developers@lists.info.uvt.ro",
-	"description" : "mOSAIC Component: ${_package_name}",
+	"maintainer" : "developers@mosaic-cloud.eu",
+	"description" : "${_package_name}",
 	"directories" : [ "bin", "lib" ],
 	"depends" : [
 		"mosaic-utils",

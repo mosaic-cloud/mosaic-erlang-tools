@@ -5,8 +5,8 @@ trap 'printf "[ee] failed: %s\n" "${BASH_COMMAND}" >&2' ERR || exit 1
 
 _workbench="$( readlink -e -- . )"
 _scripts="${_workbench}/scripts"
-_outputs="${_workbench}/.outputs"
 _tools="${mosaic_distribution_tools:-${_workbench}/.tools}"
+_outputs="${_workbench}/.outputs"
 _temporary="${mosaic_distribution_temporary:-/tmp}"
 
 _PATH="${_tools}/bin:${PATH}"
@@ -41,6 +41,11 @@ if test -z "${_ninja_bin}" ; then
 	exit 1
 fi
 
+_generic_env=(
+		PATH="${_PATH}"
+		TMPDIR="${_temporary}"
+)
+
 _erl_libs="${_outputs}/erlang/applications"
 _erl_cookie="1a839e3e140053d06ad0bc773b2d5771"
 _erl_epmd_port="${erlang_epmd_port:-31807}"
@@ -57,6 +62,7 @@ _erl_args=(
 		-env LANG C
 )
 _erl_env=(
+		"${_generic_env[@]}"
 		PATH="${_outputs}/gcc/applications-elf:${_PATH}"
 		ERL_EPMD_PORT="${_erl_epmd_port}"
 )
@@ -67,7 +73,7 @@ _epmd_args=(
 		-debug
 )
 _epmd_env=(
-		PATH="${_PATH}"
+		"${_generic_env[@]}"
 )
 
 _dialyzer_plt="${_outputs}/erlang/applications.plt"
@@ -82,13 +88,13 @@ _dialyzer_args=(
 		-Wspecdiffs
 )
 _dialyzer_env=(
-		PATH="${_PATH}"
+		"${_generic_env[@]}"
 		ERL_LIBS="${_erl_libs}"
 )
 
 _vbs_args=()
 _vbs_env=(
-		PATH="${_PATH}"
+		"${_generic_env[@]}"
 )
 
 _ninja_file="${_outputs}/.make.ninja"
@@ -96,10 +102,10 @@ _ninja_args=(
 		-f "${_ninja_file}"
 )
 _ninja_env=(
-		PATH="${_PATH}"
+		"${_generic_env[@]}"
 )
 
 _package_name="$( basename -- "$( readlink -e -- . )" )"
-_package_scripts=( run-node run-component run-tests run-epmd erl )
+_package_scripts=( run-node run-service run-component run-tests run-epmd erl )
 _package_version="${mosaic_distribution_version:-0.2.1_mosaic_dev}"
 _package_cook="${mosaic_distribution_cook:-cook@agent1.builder.mosaic.ieat.ro}"

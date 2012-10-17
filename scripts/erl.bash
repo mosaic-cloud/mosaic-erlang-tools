@@ -9,3 +9,5 @@ if test "${#_erl_args[@]}" -eq 0 ; then
 else
 	exec env "${_erl_env[@]}" "${_erl_bin}" "${_erl_args[@]}"
 fi
+
+exit 1
