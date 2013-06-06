@@ -108,5 +108,5 @@ _ninja_env=(
 
 _package_name="$( basename -- "$( readlink -e -- . )" )"
 _package_scripts=( run-node run-service run-component run-tests run-epmd erl )
-_package_version="${mosaic_distribution_version:-0.2.1_mosaic_dev}"
+_package_version="${mosaic_distribution_version:-0.3.0_mosaic_dev}"
 _package_cook="${mosaic_distribution_cook:-cook@agent1.builder.mosaic.ieat.ro}"
