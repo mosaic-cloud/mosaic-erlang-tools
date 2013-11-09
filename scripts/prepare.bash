@@ -24,9 +24,13 @@ find -L . -mindepth 1 \( -name '.*' -prune \) -o \( \( -name 'generate.bash' -o 
 	_generated="$( dirname -- "${_generate}" )/.generated"
 	if test ! -e "${_generated}" || test "${_generate}" -nt "${_generated}" ; then
 		echo "[ii] generating \`${_generated}\`..." >&2
+		_generated_store="${_temporary}/generate--$( readlink -e -- "${_generate}" | tr -d '\n' | md5sum -t | tr -d ' \n-' )"
+		rm -Rf -- "${_generated}" "${_generated_store}"
+		mkdir -- "${_generated_store}"
+		ln -s -T -- "${_generated_store}" "${_generated}"
 		if ! env PATH="${_PATH}" "${_generate}" 2>&1 | sed -u -r -e 's!^.*$![  ] &!g' >&2 ; then
 			echo "[ii] failed generating \`${_generated}\`; aborting!" >&2
-			rm -Rf -- "$( dirname -- "${_generate}" )/.generated"
+			rm -Rf -- "${_generated}" "${_generated_store}"
 			exit 1
 		fi
 	fi
