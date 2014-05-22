@@ -12,14 +12,14 @@ cp -T ./repositories/erlzmq2/src/erlzmq.app.src ./.generated/erlzmq.app
 
 gcc -shared -o ./.generated/erlzmq_drv.so \
 		-I ./repositories/erlzmq2/c_src \
-		-I "${mosaic_pkg_zeromq:-/usr}/include" \
-		-I "${mosaic_pkg_erlang:-/usr/lib/erlang}/usr/include" \
-		-L "${mosaic_pkg_erlang:-/usr/lib/erlang}/usr/lib" \
-		${mosaic_CFLAGS:-} ${mosaic_LDFLAGS:-} \
+		-I "${pallur_pkg_zeromq:-/usr}/include" \
+		-I "${pallur_pkg_erlang:-/usr/lib/erlang}/usr/include" \
+		-L "${pallur_pkg_erlang:-/usr/lib/erlang}/usr/lib" \
+		${pallur_CFLAGS:-} ${pallur_LDFLAGS:-} \
 		./repositories/erlzmq2/c_src/erlzmq_nif.c \
 		./repositories/erlzmq2/c_src/vector.c \
-		"${mosaic_pkg_zeromq:-/usr}/lib/libzmq.a" \
+		"${pallur_pkg_zeromq:-/usr}/lib/libzmq.a" \
 		-lstdc++ -luuid \
-		${mosaic_LIBS:-}
+		${pallur_LIBS:-}
 
 exit 0
