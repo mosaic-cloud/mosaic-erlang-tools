@@ -15,6 +15,7 @@ gcc -shared -o ./.generated/erlzmq_drv.so \
 		-I "${pallur_pkg_zeromq:-/usr}/include" \
 		-I "${pallur_pkg_erlang:-/usr/lib/erlang}/usr/include" \
 		-L "${pallur_pkg_erlang:-/usr/lib/erlang}/usr/lib" \
+		-w \
 		${pallur_CFLAGS:-} ${pallur_LDFLAGS:-} \
 		./repositories/erlzmq2/c_src/erlzmq_nif.c \
 		./repositories/erlzmq2/c_src/vector.c \
