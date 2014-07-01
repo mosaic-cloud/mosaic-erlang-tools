@@ -6,25 +6,39 @@ export -n BASH_ENV
 
 _workbench="$( readlink -e -- . )"
 _scripts="${_workbench}/scripts"
-_tools="${pallur_tools:-${_workbench}/.tools}"
 _outputs="${_workbench}/.outputs"
-_temporary="${pallur_temporary:-/tmp}"
+_tools="${pallur_tools:-${_workbench}/.tools}"
+_temporary="${pallur_temporary:-${pallur_TMPDIR:-${TMPDIR:-/tmp}}}"
 
-_PATH="${_tools}/bin:${PATH}"
+_PATH="${pallur_PATH:-${_tools}/bin:${PATH}}"
+_HOME="${pallur_HOME:-${HOME}}"
+_TMPDIR="${pallur_TMPDIR:-${TMPDIR:-${_temporary}}}"
 
-_erl_bin="$( PATH="${_PATH}" type -P -- erl || true )"
+if test -n "${pallur_pkg_erlang:-}" ; then
+	_erl_bin="${pallur_pkg_erlang}/bin/erl"
+else
+	_erl_bin="$( PATH="${_PATH}" type -P -- erl || true )"
+fi
 if test -z "${_erl_bin}" ; then
 	echo "[ee] missing \`erl\` (Erlang interpreter) executable in path: \`${_PATH}\`; ignoring!" >&2
 	exit 1
 fi
 
-_epmd_bin="$( PATH="${_PATH}" type -P -- epmd || true )"
+if test -n "${pallur_pkg_erlang:-}" ; then
+	_epmd_bin="${pallur_pkg_erlang}/bin/epmd"
+else
+	_epmd_bin="$( PATH="${_PATH}" type -P -- epmd || true )"
+fi
 if test -z "${_epmd_bin}" ; then
 	echo "[ee] missing \`epmd\` (Erlang Process Mapper Daemon) executable in path: \`${_PATH}\`; ignoring!" >&2
 	exit 1
 fi
 
-_dialyzer_bin="$( PATH="${_PATH}" type -P -- dialyzer || true )"
+if test -n "${pallur_pkg_erlang:-}" ; then
+	_dialyzer_bin="${pallur_pkg_erlang}/bin/dialyzer"
+else
+	_dialyzer_bin="$( PATH="${_PATH}" type -P -- dialyzer || true )"
+fi
 if test -z "${_dialyzer_bin}" ; then
 	echo "[ee] missing \`dialyzer\` (Erlang Discrepancy Analyzer) executable in path: \`${_PATH}\`; ignoring!" >&2
 	exit 1
@@ -44,7 +58,8 @@ fi
 
 _generic_env=(
 		PATH="${_PATH}"
-		TMPDIR="${_temporary}"
+		HOME="${_HOME}"
+		TMPDIR="${_TMPDIR}"
 )
 
 _erl_libs="${_outputs}/erlang/applications"
