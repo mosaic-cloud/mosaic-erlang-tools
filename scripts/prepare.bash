@@ -17,20 +17,7 @@ find -L . -mindepth 1 \( -name '.*' -prune \) -o \( \( -name 'generate.bash' -o 
 | sort -t '	' -k 1,1 \
 | cut -d '	' -f 2 \
 | while read _generate ; do
-	case "${_generate}" in
-		( */generate.bash )
-			_generate_name="$( basename -- "$( dirname -- "${_generate}" )" )"
-		;;
-		( */generate-*.bash )
-			_generate_name="$( basename -- "${_generate}" )"
-			_generate_name="${_generate_name##generate-}"
-			_generate_name="${_generate_name%%.bash}"
-			_generate_name="$( basename -- "$( dirname -- "${_generate}" )" )-${_generate_name}"
-		;;
-		( * )
-			false
-		;;
-	esac
+	_generate_name="$( basename -- "$( dirname -- "${_generate}" )" )"
 	_generate_outputs="${_outputs}/generate--${_generate_name}--$( readlink -e -- "${_generate}" | tr -d '\n' | md5sum -t | tr -d ' \n-' )"
 	if test ! -e "${_generate_outputs}" || test "${_generate}" -nt "${_generate_outputs}" ; then
 		echo "[ii] executing \`${_generate}\`..." >&2

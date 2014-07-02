@@ -130,6 +130,12 @@ _ninja_env=(
 
 _generate_env=(
 		"${_generic_env[@]}"
+		_workbench="${_workbench}"
+		_scripts="${_scripts}"
+		_tools="${_tools}"
+		_temporary="${_temporary}"
+		_outputs="${_outputs}"
+		_generated="${_generated}"
 )
 
 _package_name="$( basename -- "$( readlink -e -- . )" )"
