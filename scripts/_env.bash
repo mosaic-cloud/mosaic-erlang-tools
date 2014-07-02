@@ -6,9 +6,10 @@ export -n BASH_ENV
 
 _workbench="$( readlink -e -- . )"
 _scripts="${_workbench}/scripts"
-_outputs="${_workbench}/.outputs"
 _tools="${pallur_tools:-${_workbench}/.tools}"
 _temporary="${pallur_temporary:-${pallur_TMPDIR:-${TMPDIR:-/tmp}}}"
+_outputs="${_temporary}/$( basename -- "${_workbench}" )--outputs--$( readlink -e -- "${_workbench}" | tr -d '\n' | md5sum -t | tr -d ' \n-' )"
+_generated="${_outputs}/generated"
 
 _PATH="${pallur_PATH:-${_tools}/bin:${PATH}}"
 _HOME="${pallur_HOME:-${HOME}}"
@@ -111,6 +112,12 @@ _dialyzer_env=(
 _vbs_args=()
 _vbs_env=(
 		"${_generic_env[@]}"
+		_workbench="${_workbench}"
+		_scripts="${_scripts}"
+		_tools="${_tools}"
+		_temporary="${_temporary}"
+		_outputs="${_outputs}"
+		_generated="${_generated}"
 )
 
 _ninja_file="${_outputs}/.make.ninja"
@@ -118,6 +125,10 @@ _ninja_args=(
 		-f "${_ninja_file}"
 )
 _ninja_env=(
+		"${_generic_env[@]}"
+)
+
+_generate_env=(
 		"${_generic_env[@]}"
 )
 

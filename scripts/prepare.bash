@@ -6,33 +6,44 @@ if ! test "${#}" -eq 0 ; then
 fi
 
 if test ! -e "${_outputs}" ; then
-	if test -L "${_outputs}" ; then
-		_outputs_store="$( readlink -- "${_outputs}" )"
-	else
-		_outputs_store="${_temporary}/$( basename -- "${_workbench}" )--$( readlink -m -- "${_outputs}" | tr -d '\n' | md5sum -t | tr -d ' \n-' )"
-		ln -s -T -- "${_outputs_store}" "${_outputs}"
-	fi
-	if test ! -e "${_outputs_store}" ; then
-		mkdir -- "${_outputs_store}"
-	fi
+	mkdir -- "${_outputs}"
 fi
+if test ! -e "${_generated}" ; then
+	mkdir -- "${_generated}"
+fi
+
 
 find -L . -mindepth 1 \( -name '.*' -prune \) -o \( \( -name 'generate.bash' -o -name 'generate-*.bash' \) -printf '%f\t%p\n' \) \
 | sort -t '	' -k 1,1 \
 | cut -d '	' -f 2 \
 | while read _generate ; do
-	_generated="$( dirname -- "${_generate}" )/.generated"
-	if test ! -e "${_generated}" || test "${_generate}" -nt "${_generated}" ; then
-		echo "[ii] generating \`${_generated}\`..." >&2
-		_generated_store="${_temporary}/generate--$( readlink -e -- "${_generate}" | tr -d '\n' | md5sum -t | tr -d ' \n-' )"
-		rm -Rf -- "${_generated}" "${_generated_store}"
-		mkdir -- "${_generated_store}"
-		ln -s -T -- "${_generated_store}" "${_generated}"
-		if ! env PATH="${_PATH}" "${_generate}" 2>&1 | sed -u -r -e 's!^.*$![  ] &!g' >&2 ; then
-			echo "[ii] failed generating \`${_generated}\`; aborting!" >&2
-			rm -Rf -- "${_generated}" "${_generated_store}"
+	case "${_generate}" in
+		( */generate.bash )
+			_generate_name="$( basename -- "$( dirname -- "${_generate}" )" )"
+		;;
+		( */generate-*.bash )
+			_generate_name="$( basename -- "${_generate}" )"
+			_generate_name="${_generate_name##generate-}"
+			_generate_name="${_generate_name%%.bash}"
+			_generate_name="$( basename -- "$( dirname -- "${_generate}" )" )-${_generate_name}"
+		;;
+		( * )
+			false
+		;;
+	esac
+	_generate_outputs="${_outputs}/generate--${_generate_name}--$( readlink -e -- "${_generate}" | tr -d '\n' | md5sum -t | tr -d ' \n-' )"
+	if test ! -e "${_generate_outputs}" || test "${_generate}" -nt "${_generate_outputs}" ; then
+		echo "[ii] executing \`${_generate}\`..." >&2
+		rm -Rf -- "${_generate_outputs}"
+		mkdir -- "${_generate_outputs}"
+		if ! env "${_generate_env[@]}" _generate_outputs="${_generate_outputs}" "${_generate}" 2>&1 | sed -u -r -e 's!^.*$![  ] &!g' >&2 ; then
+			echo "[ii] failed executing \`${_generate}\`; aborting!" >&2
+			rm -Rf -- "${_generate_outputs}"
 			exit 1
 		fi
+	fi
+	if test ! -e "${_generated}/${_generate_name}" ; then
+		ln -s -T "${_generate_outputs}" "${_generated}/${_generate_name}"
 	fi
 done
 
