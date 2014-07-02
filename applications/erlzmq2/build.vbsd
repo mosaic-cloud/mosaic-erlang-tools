@@ -1,8 +1,10 @@
 
 (vbs:require-erlang)
 
+(define _generated (vbs:path-join (vbs:resolve-environment-variable "_generated") "erlzmq2"))
+
 (vbs:define-erlang-application 'erlzmq
 	erl: "\\./repositories/erlzmq2/src/.*\\.erl"
 	hrl: "\\./repositories/erlzmq2/(include|src)/.*\\.hrl"
-	additional-ebin: "\\./\\.generated/erlzmq\\.app"
-	additional-priv: "\\./\\.generated/erlzmq_drv\\.so")
+	additional-ebin: (vbs:path-join _generated "erlzmq.app")
+	additional-priv: (vbs:path-join _generated "erlzmq_drv.so"))

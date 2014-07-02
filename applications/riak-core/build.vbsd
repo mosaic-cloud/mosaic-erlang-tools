@@ -1,8 +1,10 @@
 
 (vbs:require-erlang)
 
+(define _generated (vbs:path-join (vbs:resolve-environment-variable "_generated") "riak-core"))
+
 (vbs:define-erlang-application 'riak_core
 	dependencies: '(webmachine mochiweb)
 	erl: "(\\./repositories/riak-core/src|\\./generated)/.*\\.erl"
 	hrl: "(\\./repositories/riak-core/include|\\./generated)/.*\\.hrl"
-	additional-ebin: "\\./\\.generated/riak_core\\.app|\\./generated/.*\\.beam")
+	additional-ebin: (list (vbs:paths-resolve "\\./generated/.*\\.beam") (vbs:path-join _generated "riak_core.app")))

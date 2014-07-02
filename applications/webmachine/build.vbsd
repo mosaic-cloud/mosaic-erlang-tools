@@ -1,8 +1,10 @@
 
 (vbs:require-erlang)
 
+(define _generated (vbs:path-join (vbs:resolve-environment-variable "_generated") "webmachine"))
+
 (vbs:define-erlang-application 'webmachine
 	dependencies: 'mochiweb
 	erl: "\\./repositories/webmachine/src/.*\\.erl"
 	hrl: "\\./repositories/webmachine/(include|src)/.*\\.hrl"
-	additional-ebin: "\\./\\.generated/webmachine\\.app")
+	additional-ebin: (vbs:path-join _generated "webmachine.app"))
