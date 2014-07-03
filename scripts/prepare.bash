@@ -23,7 +23,7 @@ find -L . -mindepth 1 \( -name '.*' -prune \) -o \( \( -name 'generate.bash' -o 
 		echo "[ii] executing \`${_generate}\`..." >&2
 		rm -Rf -- "${_generate_outputs}"
 		mkdir -- "${_generate_outputs}"
-		if ! env "${_generate_env[@]}" _generate_outputs="${_generate_outputs}" "${_generate}" 2>&1 | sed -u -r -e 's!^.*$![  ] &!g' >&2 ; then
+		if ! env "${_generate_env[@]}" _generate_outputs="${_generate_outputs}" "${_generate}" </dev/null 2>&1 | sed -u -r -e 's!^.*$![  ] &!g' >&2 ; then
 			echo "[ii] failed executing \`${_generate}\`; aborting!" >&2
 			rm -Rf -- "${_generate_outputs}"
 			exit 1
