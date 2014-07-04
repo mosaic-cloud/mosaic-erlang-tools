@@ -19,15 +19,19 @@ find -L . -mindepth 1 \( -name '.*' -prune \) -o \( \( -name 'generate.bash' -o 
 | while read _generate ; do
 	_generate_name="$( basename -- "$( dirname -- "${_generate}" )" )"
 	_generate_outputs="${_outputs}/generate--${_generate_name}--$( readlink -e -- "${_generate}" | tr -d '\n' | md5sum -t | tr -d ' \n-' )"
-	if test ! -e "${_generate_outputs}" || test "${_generate}" -nt "${_generate_outputs}" ; then
+	if test ! -e "${_generate_outputs}/.generated" || test "${_generate}" -nt "${_generate_outputs}/.generated" ; then
 		echo "[ii] executing \`${_generate}\`..." >&2
-		rm -Rf -- "${_generate_outputs}"
+		if test -e "${_generate_outputs}" ; then
+			chmod -R u+w -- "${_generate_outputs}"
+			rm -Rf -- "${_generate_outputs}"
+		fi
 		mkdir -- "${_generate_outputs}"
 		if ! env "${_generate_env[@]}" _generate_outputs="${_generate_outputs}" "${_generate}" </dev/null 2>&1 | sed -u -r -e 's!^.*$![  ] &!g' >&2 ; then
 			echo "[ii] failed executing \`${_generate}\`; aborting!" >&2
-			rm -Rf -- "${_generate_outputs}"
 			exit 1
 		fi
+		touch -- "${_generate_outputs}/.generated"
+		chmod -R a=rX -- "${_generate_outputs}"
 	fi
 	if test ! -e "${_generated}/${_generate_name}" ; then
 		ln -s -T "${_generate_outputs}" "${_generated}/${_generate_name}"
