@@ -141,3 +141,4 @@ _generate_env=(
 _package_name="$( basename -- "$( readlink -e -- . )" )"
 _package_version="${pallur_distribution_version:-0.7.0_dev}"
 _package_scripts=( run-node run-service run-component run-tests run-epmd erl )
+_artifacts_cache="${pallur_artifacts:-}"
