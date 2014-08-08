@@ -17,6 +17,8 @@ _TMPDIR="${pallur_TMPDIR:-${TMPDIR:-${_temporary}}}"
 
 if test -n "${pallur_pkg_erlang:-}" ; then
 	_erl_bin="${pallur_pkg_erlang}/bin/erl"
+elif test -e "${_tools}/pkg/erlang" ; then
+	_erl_bin="${_tools}/pkg/erlang/bin/erl"
 else
 	_erl_bin="$( PATH="${_PATH}" type -P -- erl || true )"
 fi
@@ -27,6 +29,8 @@ fi
 
 if test -n "${pallur_pkg_erlang:-}" ; then
 	_epmd_bin="${pallur_pkg_erlang}/bin/epmd"
+elif test -e "${_tools}/pkg/erlang" ; then
+	_epmd_bin="${_tools}/pkg/erlang/bin/epmd"
 else
 	_epmd_bin="$( PATH="${_PATH}" type -P -- epmd || true )"
 fi
@@ -37,6 +41,8 @@ fi
 
 if test -n "${pallur_pkg_erlang:-}" ; then
 	_dialyzer_bin="${pallur_pkg_erlang}/bin/dialyzer"
+elif test -e "${_tools}/pkg/erlang" ; then
+	_dialyzer_bin="${_tools}/pkg/erlang/bin/dialyzer"
 else
 	_dialyzer_bin="$( PATH="${_PATH}" type -P -- dialyzer || true )"
 fi
@@ -62,6 +68,15 @@ _generic_env=(
 		HOME="${_HOME}"
 		TMPDIR="${_TMPDIR}"
 )
+
+if test -n "${pallur_pkg_erlang:-}" ; then _generic_env+=( pallur_pkg_erlang="${pallur_pkg_erlang}" ) ;
+elif test -e "${_tools}/pkg/erlang" ; then _generic_env+=( pallur_pkg_erlang="${_tools}/pkg/erlang" ) ; fi
+
+if test -n "${pallur_pkg_zeromq:-}" ; then _generic_env+=( pallur_pkg_zeromq="${pallur_pkg_zeromq}" ) ;
+elif test -e "${_tools}/pkg/zeromq" ; then _generic_env+=( pallur_pkg_zeromq="${_tools}/pkg/zeromq" ) ; fi
+
+if test -n "${pallur_pkg_jansson:-}" ; then _generic_env+=( pallur_pkg_jansson="${pallur_pkg_jansson}" ) ;
+elif test -e "${_tools}/pkg/jansson" ; then _generic_env+=( pallur_pkg_jansson="${_tools}/pkg/jansson" ) ; fi
 
 _erl_libs="${_outputs}/erlang/applications"
 _erl_cookie="1a839e3e140053d06ad0bc773b2d5771"
