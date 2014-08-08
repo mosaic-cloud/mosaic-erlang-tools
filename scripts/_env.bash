@@ -24,7 +24,7 @@ else
 fi
 if test -z "${_erl_bin}" ; then
 	echo "[ee] missing \`erl\` (Erlang interpreter) executable in path: \`${_PATH}\`; ignoring!" >&2
-	exit 1
+	_erl_bin=false
 fi
 
 if test -n "${pallur_pkg_erlang:-}" ; then
@@ -36,7 +36,7 @@ else
 fi
 if test -z "${_epmd_bin}" ; then
 	echo "[ee] missing \`epmd\` (Erlang Process Mapper Daemon) executable in path: \`${_PATH}\`; ignoring!" >&2
-	exit 1
+	_epmd_bin=false
 fi
 
 if test -n "${pallur_pkg_erlang:-}" ; then
@@ -48,19 +48,19 @@ else
 fi
 if test -z "${_dialyzer_bin}" ; then
 	echo "[ee] missing \`dialyzer\` (Erlang Discrepancy Analyzer) executable in path: \`${_PATH}\`; ignoring!" >&2
-	exit 1
+	_dialyzer_bin=false
 fi
 
 _vbs_bin="$( PATH="${_PATH}" type -P -- vbs || true )"
 if test -z "${_vbs_bin}" ; then
 	echo "[ee] missing \`vbs\` (Volution Build System tool) executable in path: \`${_PATH}\`; ignoring!" >&2
-	exit 1
+	_vbs_bin=false
 fi
 
 _ninja_bin="$( PATH="${_PATH}" type -P -- ninja || true )"
 if test -z "${_ninja_bin}" ; then
 	echo "[ee] missing \`ninja\` (Ninja build tool) executable in path: \`${_PATH}\`; ignoring!" >&2
-	exit 1
+	_ninja_bin=false
 fi
 
 _generic_env=(
