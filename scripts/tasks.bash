@@ -9,6 +9,9 @@ cat <<EOS
 
 ${_package_name}@requisites : pallur-packages@erlang pallur-packages@vbs pallur-packages@ninja pallur-bootstrap
 
+# FIXME: Move this to the requisites of mosaic-node!
+${_package_name}@requisites : pallur-packages@jansson
+
 ${_package_name}@prepare : ${_package_name}@requisites
 	${_scripts}/prepare
 
