@@ -1,0 +1,10 @@
+
+(vbs:require-erlang)
+
+(define _generated (vbs:path-join (vbs:resolve-environment-variable "_generated") "cowlib"))
+
+(vbs:define-erlang-application 'cowlib
+	erl: "\\./repositories/cowlib/src/.*\\.erl"
+	hrl: "\\./repositories/cowlib/(include|src)/.*\\.hrl"
+	additional-ebin: (vbs:path-join _generated "cowlib.app")
+	otp-version: 17)

@@ -1,0 +1,10 @@
+
+(vbs:require-erlang)
+
+(define _generated (vbs:path-join (vbs:resolve-environment-variable "_generated") "cowboy"))
+
+(vbs:define-erlang-application 'cowboy
+	dependencies: '(ranch cowlib)
+	erl: "\\./repositories/cowboy/src/.*\\.erl"
+	additional-ebin: (vbs:path-join _generated "cowboy.app")
+	otp-version: 17)
