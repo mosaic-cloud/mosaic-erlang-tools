@@ -31,7 +31,7 @@ find -L . -mindepth 1 \( -name '.*' -prune \) -o \( \( -name 'generate.bash' -o 
 			exit 1
 		fi
 		touch -- "${_generate_outputs}/.generated"
-		chmod -R a=rX -- "${_generate_outputs}"
+		chmod -R u=rwX,go=rX -- "${_generate_outputs}"
 	fi
 	if test ! -e "${_generated}/${_generate_name}" ; then
 		ln -s -T "${_generate_outputs}" "${_generated}/${_generate_name}"

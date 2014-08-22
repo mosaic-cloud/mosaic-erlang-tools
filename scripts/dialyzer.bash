@@ -8,7 +8,12 @@ if ! test -e "${_dialyzer_plt}" ; then
 	env "${_dialyzer_env[@]}" "${_dialyzer_bin}" \
 			--build_plt \
 			--output_plt "${_dialyzer_plt}" \
-			--apps erts kernel stdlib
+			--apps \
+					erts kernel stdlib \
+					sasl \
+					crypto \
+					ssl public_key \
+					mnesia
 fi
 
 if test "${#_dialyzer_args[@]}" -eq 0 ; then

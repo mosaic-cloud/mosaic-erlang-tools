@@ -114,10 +114,10 @@ _dialyzer_args=(
 		-Wunmatched_returns
 		-Werror_handling
 		-Wrace_conditions
-		# -Wbehaviours
 		-Wunderspecs
 		-Woverspecs
 		-Wspecdiffs
+		# -Wbehaviours
 )
 _dialyzer_env=(
 		"${_generic_env[@]}"
