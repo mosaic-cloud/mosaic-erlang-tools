@@ -4,4 +4,4 @@
 (vbs:define-erlang-application 'goodies
 	erl: "\\./sources/.*\\.erl"
 	hrl: "\\./sources/.*\\.hrl"
-	otp-version: 17)
+	otp-version: 15)

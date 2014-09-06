@@ -4,7 +4,8 @@
 (define _generated (vbs:path-join (vbs:resolve-environment-variable "_generated") "webmachine"))
 
 (vbs:define-erlang-application 'webmachine
-	dependencies: 'mochiweb
+	dependencies: '(mochiweb)
 	erl: "\\./repositories/webmachine/src/.*\\.erl"
 	hrl: "\\./repositories/webmachine/(include|src)/.*\\.hrl"
-	additional-ebin: (vbs:path-join _generated "webmachine.app"))
+	additional-ebin: (vbs:path-join _generated "webmachine.app")
+	otp-version: 15)
