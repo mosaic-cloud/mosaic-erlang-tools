@@ -7,10 +7,15 @@ fi
 
 cat <<EOS
 
-${_package_name}@requisites : pallur-packages@erlang-${_otp_version} pallur-packages@vbs pallur-packages@ninja pallur-bootstrap
+${_package_name}@requisites : \
+		pallur-packages@erlang-${_otp_version} \
+		pallur-packages@vbs \
+		pallur-packages@ninja \
+		pallur-environment
 
-# FIXME: Move this to the requisites of mosaic-node!
-${_package_name}@requisites : pallur-packages@jansson
+# FIXME: Move these to the requisites of 'mosaic-node'!
+${_package_name}@requisites : \
+		pallur-packages@jansson
 
 ${_package_name}@prepare : ${_package_name}@requisites
 	!exec ${_scripts}/prepare
@@ -23,12 +28,6 @@ ${_package_name}@compile : ${_package_name}@prepare
 
 ${_package_name}@deploy : ${_package_name}@package
 	!exec ${_scripts}/deploy
-
-pallur-distribution@requisites : ${_package_name}@requisites
-pallur-distribution@prepare : ${_package_name}@prepare
-pallur-distribution@compile : ${_package_name}@compile
-pallur-distribution@package : ${_package_name}@package
-pallur-distribution@deploy : ${_package_name}@deploy
 
 EOS
 
