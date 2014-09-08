@@ -17,6 +17,16 @@ ${_package_name}@requisites : \
 ${_package_name}@requisites : \
 		pallur-packages@jansson
 
+# FIXME: Move these to the requisites of 'mosaic-components-couchdb'!
+${_package_name}@requisites : \
+		pallur-packages@js-1.8.5 \
+		pallur-packages@nspr-4.9
+
+# FIXME: Move these to the requisites of 'mosaic-components-riak-kv'!
+${_package_name}@requisites : \
+		pallur-packages@js-1.8.0 \
+		pallur-packages@nspr-4.8
+
 ${_package_name}@prepare : ${_package_name}@requisites
 	!exec ${_scripts}/prepare
 
