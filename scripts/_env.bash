@@ -158,11 +158,11 @@ _vbs_env=(
 		_generated="${_generated}"
 		vbs_executables__erl__path="${_erl_bin}"
 		vbs_executables__erl__version="${_otp_version}"
-		vbs_executables__gcc__path="$( PATH="${_PATH}" type -P -- gcc )"
-		vbs_executables__cp__path="$( PATH="${_PATH}" type -P -- cp )"
-		vbs_executables__mkdir__path="$( PATH="${_PATH}" type -P -- mkdir )"
-		vbs_executables__touch__path="$( PATH="${_PATH}" type -P -- touch )"
-		vbs_executables__zip__path="$( PATH="${_PATH}" type -P -- zip )"
+		vbs_executables__gcc__path="$( PATH="${_PATH}" type -P -- gcc 2>/dev/null || echo gcc )"
+		vbs_executables__cp__path="$( PATH="${_PATH}" type -P -- cp 2>/dev/null || echo cp )"
+		vbs_executables__mkdir__path="$( PATH="${_PATH}" type -P -- mkdir 2>/dev/null || echo mkdir )"
+		vbs_executables__touch__path="$( PATH="${_PATH}" type -P -- touch 2>/dev/null || echo touch )"
+		vbs_executables__zip__path="$( PATH="${_PATH}" type -P -- zip 2>/dev/null || echo zip )"
 )
 
 _ninja_file="${_outputs}/.make.ninja"
