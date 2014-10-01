@@ -33,6 +33,16 @@ find "${_outputs}/gcc/applications-elf" -type f -name "*.elf" -print \
 	cp -t "${_outputs}/package/lib/applications-elf" -- "${_application_elf}"
 done
 
+mkdir -- "${_outputs}/package/lib/mosaic-platform-definitions"
+find "${_outputs}/package/lib/applications-erl" -maxdepth 1 -type d \
+| while read _application_erl ; do
+	if test -e "${_application_erl}/priv/mosaic_platform_definitions.term" ; then
+		cp -T -- \
+				"${_application_erl}/priv/mosaic_platform_definitions.term" \
+				"${_outputs}/package/lib/mosaic-platform-definitions/$( basename -- "${_application_erl}" ).term"
+	fi
+done
+
 mkdir -- "${_outputs}/package/lib/scripts"
 
 cat >"${_outputs}/package/lib/scripts/_do.sh" <<'EOS'
