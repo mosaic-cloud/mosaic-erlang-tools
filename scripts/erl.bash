@@ -1,4 +1,5 @@
 #!/dev/null
+## chunk::d5a458fb8ebc4c9d3e4871341ec4d93a::begin ##
 
 if test "${#}" -ge 1 ; then
 	_erl_args+=( "${@}" )
@@ -11,3 +12,4 @@ else
 fi
 
 exit 1
+## chunk::d5a458fb8ebc4c9d3e4871341ec4d93a::end ##

@@ -1,17 +1,24 @@
 #!/dev/null
+## chunk::713ff845ecbf866694e0ec27155cbe92::begin ##
 
 if ! test "${#}" -eq 0 ; then
 	echo "[ee] invalid arguments; aborting!" >&2
 	exit 1
 fi
 
+## chunk::3c8b019c663118b00172b22aeae97568::begin ##
+if test ! -e "${_temporary}" ; then
+	mkdir -- "${_temporary}"
+fi
 if test ! -e "${_outputs}" ; then
 	mkdir -- "${_outputs}"
 fi
+## chunk::3c8b019c663118b00172b22aeae97568::end ##
+
+## chunk::88dd3dcc694b307765114685526e4b7c::begin ##
 if test ! -e "${_generated}" ; then
 	mkdir -- "${_generated}"
 fi
-
 
 find -L . -mindepth 1 \( -name '.*' -prune \) -o \( \( -name 'generate.bash' -o -name 'generate-*.bash' \) -printf '%f\t%p\n' \) \
 | sort -t '	' -k 1,1 \
@@ -51,5 +58,7 @@ then
 	)
 	env "${_vbs_env[@]}" "${_vbs_bin}" "${_vbs_args[@]}"
 fi
+## chunk::88dd3dcc694b307765114685526e4b7c::end ##
 
 exit 0
+## chunk::713ff845ecbf866694e0ec27155cbe92::end ##

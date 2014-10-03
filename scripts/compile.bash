@@ -1,4 +1,5 @@
 #!/dev/null
+## chunk::fff44f9a0b0a0a3c8ecea7b4f84c6e10::begin ##
 
 if test "${#}" -ge 1 ; then
 	_ninja_args+=( "${@}" )
@@ -11,3 +12,4 @@ else
 fi
 
 exit 1
+## chunk::fff44f9a0b0a0a3c8ecea7b4f84c6e10::end ##
