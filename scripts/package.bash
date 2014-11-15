@@ -60,6 +60,8 @@ cat >"${_outputs}/package/lib/scripts/_do.sh" <<'EOS--f4562fe8c5888d3fa382c5a4a9
 set -e -E -u -o pipefail -o noclobber -o noglob +o braceexpand || exit 1
 trap 'printf "[ee] failed: %s\n" "${BASH_COMMAND}" >&2' ERR || exit 1
 
+umask 0022
+
 _self_basename="$( basename -- "${0}" )"
 _self_realpath="$( readlink -e -- "${0}" )"
 cd -- "$( dirname -- "${_self_realpath}" )"
@@ -113,6 +115,38 @@ if test -e "${_package}/env/variables" ; then
 fi
 ## chunk::e8e633c1ba85cb854e1f1d77d5f94d94::end ##
 
+## chunk::e979b4e2e6cd5477d76d09202f2b13ae::begin ##
+if test -n "${TMPDIR:-}" ; then
+	_TMPDIR="${TMPDIR}"
+else
+	_TMPDIR="/tmp/tmpdir--$( uuidgen -r )"
+fi
+
+if test ! -e "${_TMPDIR}" ; then
+	mkdir -p -- "${_TMPDIR}"
+fi
+## chunk::e979b4e2e6cd5477d76d09202f2b13ae::end ##
+
+## chunk::6e7b427fd527fbdf65e32932cf482658::begin ##
+if test -n "${HOME:-}" ; then
+	_HOME="${HOME}"
+else
+	_HOME="${_TMPDIR}/home--$( uuidgen -r )"
+fi
+
+if test ! -e "${_HOME}" ; then
+	mkdir -p -- "${_HOME}"
+fi
+## chunk::6e7b427fd527fbdf65e32932cf482658::end ##
+
+## chunk::34de10640f9b34ff4fd698f853412327::begin ##
+_generic_env=(
+		PATH="${_PATH}"
+		HOME="${_HOME}"
+		TMPDIR="${_TMPDIR}"
+)
+## chunk::34de10640f9b34ff4fd698f853412327::end ##
+
 ## chunk::09a2e65b5bbda62661a905317bea5585::begin ##
 _erl_bin="$( PATH="${_PATH}" type -P -- erl || true )"
 if test -z "${_erl_bin}" ; then
@@ -143,7 +177,7 @@ _erl_args=(
 		-env LANG C
 )
 _erl_env=(
-		PATH="${_PATH}"
+		"${_generic_env[@]}"
 		ERL_EPMD_PORT="${_erl_epmd_port}"
 )
 
@@ -153,7 +187,7 @@ _epmd_args=(
 		-debug
 )
 _epmd_env=(
-		PATH="${_PATH}"
+		"${_generic_env[@]}"
 )
 ## chunk::09a2e65b5bbda62661a905317bea5585::end ##
 
